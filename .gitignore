@@ -1,0 +1,16 @@
+*.iml
+.gradle
+/local.properties
+/.idea/*
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+app/build.gradle
+.idea/misc.xml
+.gitignore.bak
+app/proguard-rules.pro
+app/src/androidTest/java/com/test/mylupusproject/ExampleInstrumentedTest.java
+app/src/test/java/com/test/mylupusproject/ExampleUnitTest.java

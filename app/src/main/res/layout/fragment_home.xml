@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pain_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/pain_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#DE000000"
+                android:textStyle="bold"
+                android:background="#F6F6F6"
+                android:text="Pain Info"
+                android:padding="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/pain_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="#DE000000"
+                        android:background="#F6F6F6"
+                        android:padding="8dp" />
+
+                    <TextView
+                        android:id="@+id/pain_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="#DE000000"
+                        android:background="#F6F6F6"
+                        android:text="2"
+                        android:padding="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activities_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pain_info"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/activities_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#DE000000"
+                android:textStyle="bold"
+                android:background="#F6F6F6"
+                android:text="Activities Info"
+                android:padding="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/activity_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#DE000000"
+                    android:background="#F6F6F6"
+                    android:text="Activity"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/effort_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#DE000000"
+                    android:background="#F6F6F6"
+                    android:text="Effort"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/duration_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#DE000000"
+                    android:background="#F6F6F6"
+                    android:text="Duration(Hours)"
+                    android:padding="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#DE000000"
+                    android:background="#F6F6F6"
+                    android:text="Work"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/effort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#DE000000"
+                    android:background="#F6F6F6"
+                    android:text="Low"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#DE000000"
+                    android:background="#F6F6F6"
+                    android:text="7.5"
+                    android:padding="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+<!--        android:id="@+id/notary_info"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/activities_info"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        card_view:cardCornerRadius="4dp">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/notary_title"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                android:textColor="#DE000000"-->
+<!--                android:textStyle="bold"-->
+<!--                android:background="#F6F6F6"-->
+<!--                android:text="Notary Info"-->
+<!--                android:padding="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/notary_name_title"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                android:textColor="#DE000000"-->
+<!--                android:background="#F6F6F6"-->
+<!--                android:text="Name"-->
+<!--                android:padding="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/notary_name"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                android:textColor="#DE000000"-->
+<!--                android:background="#F6F6F6"-->
+<!--                android:text="Branch C."-->
+<!--                android:padding="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/notary_phone_title"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                android:textColor="#DE000000"-->
+<!--                android:background="#F6F6F6"-->
+<!--                android:text="Phone"-->
+<!--                android:padding="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/notary_phone"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                android:textColor="#DE000000"-->
+<!--                android:background="#F6F6F6"-->
+<!--                android:text="(798)-276-5163"-->
+<!--                android:padding="8dp" />-->
+<!--        </LinearLayout>-->
+<!--    </androidx.cardview.widget.CardView>-->
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/schedule_button"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:layout_marginLeft="5dp"-->
+<!--        android:layout_marginRight="5dp"-->
+<!--        android:text="Schedule"/>-->
+</RelativeLayout >

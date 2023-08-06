@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "700078320220",
+    "project_id": "mylupusproject-6aa49",
+    "storage_bucket": "mylupusproject-6aa49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700078320220:android:f6d52bed9584d967699499",
+        "android_client_info": {
+          "package_name": "com.test.mylupusproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700078320220-k2bnstqk7ogevbjfraobfgiaqsnmbhj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7EDUri2bMrPc_pGZwkBbLoacG6fUuW4U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "700078320220-k2bnstqk7ogevbjfraobfgiaqsnmbhj1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
