@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -40,8 +41,10 @@ public class DocumentFragment extends Fragment {
         context = this.getContext();
         View root = inflater.inflate(R.layout.frament_data_lists, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.document_recycler_view);
-        FragmentActivity fragmentActivity = getActivity();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        FragmentActivity fragmentActivity = getActivity();
+        //BottomNavigationView navBar = getActivity().findViewById(R.id.nav_view);
+        //recyclerAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Root", navBar).getAdapter("root");
         recyclerAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Root", fragmentActivity).getAdapter("root");
         recyclerView.setAdapter(recyclerAdapter);
         return root;

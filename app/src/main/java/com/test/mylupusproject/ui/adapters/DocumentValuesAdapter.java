@@ -5,16 +5,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.test.mylupusproject.R;
@@ -31,12 +35,15 @@ public class DocumentValuesAdapter {
     private Context context = null;
     private FragmentManager fragmentManager = null;
     private String queryString = null;
+    private boolean opened;
+    private FragmentActivity mainFragmentActivity = null;
 
-    public DocumentValuesAdapter(View root, Context context, FragmentManager fragmentManager, String queryString) {
+public DocumentValuesAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity mainFragmentActivity) {
         this.root = root;
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.queryString = queryString;
+        this.mainFragmentActivity = mainFragmentActivity;
     }
 
     public FirestoreRecyclerAdapter<DocumentModel, DocumentValuesAdapter.ViewHolder> getAdapter() {
@@ -94,22 +101,75 @@ public class DocumentValuesAdapter {
         }
 
         void setListeners(@NonNull DocumentModel documentModel) {
-            ImageButton addButton = view.findViewById(R.id.more_button);
-            addButton.setOnClickListener(view -> {
-                Toast.makeText(context, "More button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
+            ImageButton moreButton = view.findViewById(R.id.more_button);
+            moreButton.setOnClickListener(view -> {
+                moreButton.setClickable(false);
+                BottomNavigationView navBar = mainFragmentActivity.findViewById(R.id.nav_view);
+                ConstraintLayout bottomSlideMenu = mainFragmentActivity.findViewById(R.id.bottom_slide_menu);
+                if(!opened) {
+                    TranslateAnimation animateNavBarDown = new TranslateAnimation(
+                            0,
+                            0,
+                            0,
+                            navBar.getHeight());
+                    animateNavBarDown.setDuration(500);
+                    navBar.startAnimation(animateNavBarDown);
+                    navBar.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            navBar.setVisibility(View.GONE);
+                            bottomSlideMenu.setVisibility(View.INVISIBLE);
+                            bottomSlideMenu.setVisibility(View.VISIBLE);
+                            TranslateAnimation animateSlideMenuUp = new TranslateAnimation(
+                                    0,
+                                    0,
+                                    bottomSlideMenu.getHeight(),
+                                    0);
+                            animateSlideMenuUp.setDuration(500);
+                            bottomSlideMenu.startAnimation(animateSlideMenuUp);
+                            bottomSlideMenu.setVisibility(View.VISIBLE);
+                            moreButton.setClickable(true);
+                        }
+                    }, 500);
+                } else {
+                    TranslateAnimation animateSlideMenuDown = new TranslateAnimation(
+                            0,
+                            0,
+                            0,
+                            bottomSlideMenu.getHeight());
+                    animateSlideMenuDown.setDuration(500);
+                    bottomSlideMenu.startAnimation(animateSlideMenuDown);
+                    bottomSlideMenu.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomSlideMenu.setVisibility(View.GONE);
+                            navBar.setVisibility(View.INVISIBLE);
+                            TranslateAnimation animateNavBarUp = new TranslateAnimation(
+                                    0,
+                                    0,
+                                    navBar.getHeight(),
+                                    0);
+                            animateNavBarUp.setDuration(500);
+                            navBar.startAnimation(animateNavBarUp);
+                            navBar.setVisibility(View.VISIBLE);
+                            moreButton.setClickable(true);
+                        }
+                    }, 500);
+                }
+                opened = !opened;
             });
 
-//            ImageButton addButton = view.findViewById(R.id.add_button);
+//            ImageButton addButton = mainFragmentActivity.findViewById(R.id.add_button);
 //            addButton.setOnClickListener(view -> {
 //                Toast.makeText(context, "Add button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
 //            });
 //
-//            ImageButton editButton = view.findViewById(R.id.edit_button);
+//            ImageButton editButton = mainFragmentActivity.findViewById(R.id.edit_button);
 //            editButton.setOnClickListener(view -> {
 //                Toast.makeText(context, "Edit button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
 //            });
 //
-//            ImageButton deleteButton = view.findViewById(R.id.delete_button);
+//            ImageButton deleteButton = mainFragmentActivity.findViewById(R.id.delete_button);
 //            deleteButton.setOnClickListener(view -> {
 //                Toast.makeText(context, "Delete button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
 //            });

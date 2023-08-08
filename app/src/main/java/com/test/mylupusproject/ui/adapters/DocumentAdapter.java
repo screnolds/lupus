@@ -39,19 +39,20 @@ public class DocumentAdapter {
     private static final String TAG = "DocumentAdapter";
     private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> documentAdapter;
     private View root = null;
+    private View dataListView = null;
     private Context context = null;
     private FragmentManager fragmentManager = null;
     private String queryString = null;
     private String docType = null;
-    private FragmentActivity parentFragmentActivity = null;
     private boolean opened;
+    private FragmentActivity mainFragmentActivity = null;
 
-    public DocumentAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity parentFragmentActivity) {
+public DocumentAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity mainFragmentActivity) {
         this.root = root;
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.queryString = queryString;
-        this.parentFragmentActivity = parentFragmentActivity;
+        this.mainFragmentActivity = mainFragmentActivity;
     }
 
     public FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> getAdapter(String docType) {
@@ -168,49 +169,75 @@ public class DocumentAdapter {
                 }
             });
 
-            ImageButton addButton = view.findViewById(R.id.more_button);
-            addButton.setOnClickListener(view -> {
-                View bottomNavigationView = (View) parentFragmentActivity.findViewById(R.id.nav_view);
-                ConstraintLayout bottomSlideMenu = parentFragmentActivity.findViewById(R.id.bottom_slide_menu);
+            ImageButton moreButton = view.findViewById(R.id.more_button);
+            moreButton.setOnClickListener(view -> {
+                moreButton.setClickable(false);
+                BottomNavigationView navBar = mainFragmentActivity.findViewById(R.id.nav_view);
+                ConstraintLayout bottomSlideMenu = mainFragmentActivity.findViewById(R.id.bottom_slide_menu);
                 if(!opened) {
-                    //bottomNavigationView.setVisibility(View.GONE);
-                    bottomSlideMenu.setVisibility(View.VISIBLE);
-                    bottomSlideMenu.bringToFront();
-                    TranslateAnimation animate = new TranslateAnimation(
+                    TranslateAnimation animateNavBarDown = new TranslateAnimation(
                             0,
                             0,
-                            bottomSlideMenu.getHeight(),
-                            0);
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    bottomSlideMenu.startAnimation(animate);
+                            0,
+                            navBar.getHeight());
+                    animateNavBarDown.setDuration(500);
+                    navBar.startAnimation(animateNavBarDown);
+                    navBar.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            navBar.setVisibility(View.GONE);
+                            bottomSlideMenu.setVisibility(View.INVISIBLE);
+                            bottomSlideMenu.setVisibility(View.VISIBLE);
+                            TranslateAnimation animateSlideMenuUp = new TranslateAnimation(
+                                    0,
+                                    0,
+                                    bottomSlideMenu.getHeight(),
+                                    0);
+                            animateSlideMenuUp.setDuration(500);
+                            bottomSlideMenu.startAnimation(animateSlideMenuUp);
+                            bottomSlideMenu.setVisibility(View.VISIBLE);
+                            moreButton.setClickable(true);
+                        }
+                    }, 500);
                 } else {
-                    bottomSlideMenu.setVisibility(View.GONE);
-                    TranslateAnimation animate = new TranslateAnimation(
+                    TranslateAnimation animateSlideMenuDown = new TranslateAnimation(
                             0,
                             0,
                             0,
                             bottomSlideMenu.getHeight());
-                    animate.setDuration(500);
-                    animate.setFillAfter(true);
-                    bottomSlideMenu.startAnimation(animate);
-                    //bottomNavigationView.setVisibility(View.VISIBLE);
+                    animateSlideMenuDown.setDuration(500);
+                    bottomSlideMenu.startAnimation(animateSlideMenuDown);
+                    bottomSlideMenu.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomSlideMenu.setVisibility(View.GONE);
+                            navBar.setVisibility(View.INVISIBLE);
+                            TranslateAnimation animateNavBarUp = new TranslateAnimation(
+                                    0,
+                                    0,
+                                    navBar.getHeight(),
+                                    0);
+                            animateNavBarUp.setDuration(500);
+                            navBar.startAnimation(animateNavBarUp);
+                            navBar.setVisibility(View.VISIBLE);
+                            moreButton.setClickable(true);
+                        }
+                    }, 500);
                 }
                 opened = !opened;
-                Toast.makeText(context, "More button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
             });
 
-//            ImageButton addButton = view.findViewById(R.id.add_button);
+//            ImageButton addButton = mainFragmentActivity.findViewById(R.id.add_button);
 //            addButton.setOnClickListener(view -> {
 //                Toast.makeText(context, "Add button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
 //            });
 //
-//            ImageButton editButton = view.findViewById(R.id.edit_button);
+//            ImageButton editButton = mainFragmentActivity.findViewById(R.id.edit_button);
 //            editButton.setOnClickListener(view -> {
 //                Toast.makeText(context, "Edit button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
 //            });
 //
-//            ImageButton deleteButton = view.findViewById(R.id.delete_button);
+//            ImageButton deleteButton = mainFragmentActivity.findViewById(R.id.delete_button);
 //            deleteButton.setOnClickListener(view -> {
 //                Toast.makeText(context, "Delete button Clicked! " + this.documentName, Toast.LENGTH_LONG).show();
 //            });

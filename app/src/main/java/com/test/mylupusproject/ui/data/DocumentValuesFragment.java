@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.test.mylupusproject.R;
 import com.test.mylupusproject.ui.adapters.DocumentValuesAdapter;
 
@@ -34,7 +36,10 @@ public class DocumentValuesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_document_values, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.document_values_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerAdapter = new DocumentValuesAdapter(root, context, getChildFragmentManager(), queryString).getAdapter();
+        FragmentActivity fragmentActivity = getActivity();
+//        BottomNavigationView navBar = getActivity().findViewById(R.id.nav_view);
+//        recyclerAdapter = new DocumentValuesAdapter(root, context, getChildFragmentManager(), queryString, navBar).getAdapter();
+        recyclerAdapter = new DocumentValuesAdapter(root, context, getChildFragmentManager(), queryString, fragmentActivity).getAdapter();
         recyclerView.setAdapter(recyclerAdapter);
         return root;
     }
