@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -44,12 +46,13 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
 
     public FirestoreRecyclerAdapter<DocumentModel, DocumentValuesAdapter.ViewHolder> getAdapter() {
         CollectionReference query = FirebaseFirestore.getInstance().collection(queryString);
-        FirestoreRecyclerOptions<DocumentModel> options = new FirestoreRecyclerOptions.Builder<DocumentModel>().setQuery(query, DocumentModel.class).build();
+        FirestoreRecyclerOptions<DocumentModel> options = new FirestoreRecyclerOptions.Builder<DocumentModel>().setQuery(query.orderBy("name"), DocumentModel.class).build();
         documentAdapter = new FirestoreRecyclerAdapter<DocumentModel, DocumentValuesAdapter.ViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull DocumentModel documentModel) {
-                Log.d(TAG, "Binding: " + documentModel.getDocId() + " Position: " + position);
-                holder.setItemName(documentModel.getDocId());
+                Log.d(TAG, "Binding: " + documentModel.getName() + " Position: " + position);
+                holder.togglePlacholderView(documentModel.getName());
+                holder.setItemName(documentModel.getName());
                 holder.updateContainerId();
                 holder.setListeners(documentModel);
             }
@@ -66,7 +69,6 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
-        private String documentName;
         private Context context;
         private int containerId;
         private Random r;
@@ -92,14 +94,40 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
         }
 
         void setItemName(String documentName) {
-            this.documentName = documentName;
             TextView textView = view.findViewById(R.id.document_name);
             textView.setText(documentName);
         }
 
         void setListeners(@NonNull DocumentModel documentModel) {
-            listenerHelper = new ListenerHelper(view, mainFragmentActivity, documentModel, context, "Item");
-            listenerHelper.addMoreButtonClickListners();
+            listenerHelper = new ListenerHelper(root, view, mainFragmentActivity, documentModel, context, "item", containerId, fragmentManager);
+            listenerHelper.addMoreButtonClickListeners();
+            listenerHelper.addLessButtonClickListeners();
+            listenerHelper.addEditTextDoneListener();
+        }
+
+        void togglePlacholderView(String documentName) {
+            TextView textView = view.findViewById(R.id.document_name);
+            EditText editText = view.findViewById(R.id.document_name_edit);
+            if (documentName.equals("AAAAAAAA")) {
+                if (textView.getVisibility() == View.VISIBLE) {
+                    textView.setVisibility(View.GONE);
+                }
+                if (editText.getVisibility() == View.GONE) {
+                    editText.setVisibility(View.VISIBLE);
+                }
+                editText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+                if (!imm.isAcceptingText()) {
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
+            } else {
+                if (textView.getVisibility() == View.GONE) {
+                    textView.setVisibility(View.VISIBLE);
+                }
+                if (editText.getVisibility() == View.VISIBLE) {
+                    editText.setVisibility(View.GONE);
+                }
+            }
         }
     }
 }

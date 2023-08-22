@@ -9,13 +9,15 @@ public class DocumentModel extends ViewModel {
     private String docId;
     private String childrenType;
     private String path;
+    private String name;
 
     public DocumentModel() {}
 
-    public DocumentModel(String docId, String childrenType, String path) {
+    public DocumentModel(String docId, String childrenType, String path, String name) {
         this.docId = docId;
         this.childrenType = childrenType;
         this.path = path;
+        this.name = name;
     }
 
     @DocumentId
@@ -42,5 +44,13 @@ public class DocumentModel extends ViewModel {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

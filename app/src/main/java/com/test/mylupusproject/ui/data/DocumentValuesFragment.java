@@ -37,8 +37,6 @@ public class DocumentValuesFragment extends Fragment {
         RecyclerView recyclerView = root.findViewById(R.id.document_values_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         FragmentActivity fragmentActivity = getActivity();
-//        BottomNavigationView navBar = getActivity().findViewById(R.id.nav_view);
-//        recyclerAdapter = new DocumentValuesAdapter(root, context, getChildFragmentManager(), queryString, navBar).getAdapter();
         recyclerAdapter = new DocumentValuesAdapter(root, context, getChildFragmentManager(), queryString, fragmentActivity).getAdapter();
         recyclerView.setAdapter(recyclerAdapter);
         return root;

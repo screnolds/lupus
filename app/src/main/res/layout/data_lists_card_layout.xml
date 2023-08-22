@@ -17,7 +17,7 @@
     <!-- This is a ConstraintLayout for the entire CardView including the expandable portion -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="@+id/document_cardview"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.511"
@@ -28,7 +28,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/fixed_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -40,9 +41,9 @@
                 android:id="@+id/arrow_button"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:backgroundTint="@color/white"
                 android:contentDescription="@string/arrow_button_desc"
                 android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
-                android:backgroundTint="@color/white"
                 app:layout_constraintBottom_toBottomOf="@id/fixed_layout"
                 app:layout_constraintEnd_toEndOf="@+id/fixed_layout"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -55,11 +56,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#DE000000"
-                android:textStyle="bold"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/fixed_layout"
                 app:layout_constraintRight_toRightOf="@+id/fixed_layout"
                 app:layout_constraintStart_toEndOf="@+id/arrow_button"
+                app:layout_constraintTop_toTopOf="@+id/fixed_layout"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <EditText
+                android:id="@+id/document_name_edit"
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:background="@color/light_gray"
+                android:hint="Enter Group Name"
+                android:inputType="textCapWords"
+                android:paddingLeft="3dp"
+                android:textColor="#DE000000"
+                android:textSize="15sp"
+                android:textStyle="italic|bold"
+                android:visibility="gone"
+                android:imeOptions="actionDone"
+                app:layout_constraintBottom_toBottomOf="@+id/fixed_layout"
+                app:layout_constraintRight_toRightOf="@+id/fixed_layout"
+                app:layout_constraintStart_toEndOf="@+id/arrow_button"
+                app:layout_constraintEnd_toStartOf="@+id/more_button"
                 app:layout_constraintTop_toTopOf="@+id/fixed_layout"
                 app:layout_constraintVertical_bias="0.5" />
 
@@ -75,41 +96,189 @@
                 app:layout_constraintTop_toTopOf="@+id/fixed_layout"
                 app:layout_constraintVertical_bias="0.5" />
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/delete_button"-->
-<!--                android:layout_width="36dp"-->
-<!--                android:layout_height="36dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:contentDescription="@string/delete_button_desc"-->
-<!--                android:src="@drawable/baseline_delete_24"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/fixed_layout"-->
-<!--                app:layout_constraintEnd_toEndOf="@+id/fixed_layout"-->
-<!--                app:layout_constraintTop_toTopOf="@+id/fixed_layout"-->
-<!--                app:layout_constraintVertical_bias="0.5" />-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/edit_button"-->
-<!--                android:layout_width="36dp"-->
-<!--                android:layout_height="36dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:contentDescription="@string/edit_button_desc"-->
-<!--                android:src="@drawable/baseline_edit_24"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/fixed_layout"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/delete_button"-->
-<!--                app:layout_constraintTop_toTopOf="@+id/fixed_layout"-->
-<!--                app:layout_constraintVertical_bias="0.5" />-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fixed_layout_more_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/evening"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/add_button"-->
-<!--                android:layout_width="36dp"-->
-<!--                android:layout_height="36dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:contentDescription="@string/add_button_desc"-->
-<!--                android:src="@drawable/baseline_add_circle_outline_24"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/fixed_layout"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/edit_button"-->
-<!--                app:layout_constraintTop_toTopOf="@+id/fixed_layout"-->
-<!--                app:layout_constraintVertical_bias="0.5" />-->
+            <LinearLayout
+                android:id="@+id/add_folder_button_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/add_button_container"
+                app:layout_constraintTop_toTopOf="@+id/fixed_layout_more_menu">
+
+                <ImageButton
+                    android:id="@+id/add_folder_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="Click to add"
+                    android:src="@drawable/baseline_folder_white_28" />
+
+                <ImageButton
+                    android:id="@+id/divider1"
+                    android:layout_width="1dp"
+                    android:layout_height="40sp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/add_folder_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/add_folder_button_container_overlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/fixed_layout_more_menu"
+                app:layout_constraintEnd_toEndOf="@+id/add_folder_button_container"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/add_button_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/edit_button_container"
+                app:layout_constraintTop_toTopOf="@+id/fixed_layout_more_menu">
+
+                <ImageButton
+                    android:id="@+id/add_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="Click to add"
+                    android:src="@drawable/baseline_playlist_add_white_28" />
+
+                <ImageButton
+                    android:id="@+id/divider2"
+                    android:layout_width="1dp"
+                    android:layout_height="40sp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/add_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/add_button_container_overlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_folder_button_container_overlay"
+                app:layout_constraintEnd_toStartOf="@+id/edit_button_container"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/edit_button_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/delete_button_container"
+                app:layout_constraintTop_toTopOf="@+id/fixed_layout_more_menu">
+
+                <ImageButton
+                    android:id="@+id/edit_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="Click to add"
+                    android:src="@drawable/baseline_edit_white_28" />
+
+                <ImageButton
+                    android:id="@+id/divider3"
+                    android:layout_width="1dp"
+                    android:layout_height="40sp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/edit_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/edit_button_container_overlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_button_container_overlay"
+                app:layout_constraintEnd_toStartOf="@+id/delete_button_container"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/delete_button_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toStartOf="@+id/less_button"
+                app:layout_constraintTop_toTopOf="@+id/fixed_layout_more_menu">
+
+                <ImageButton
+                    android:id="@+id/delete_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="Click to add"
+                    android:src="@drawable/baseline_delete_white_28" />
+
+                <ImageButton
+                    android:id="@+id/divider4"
+                    android:layout_width="1dp"
+                    android:layout_height="40sp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/delete_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/delete_button_container_overlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?android:selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/edit_button_container_overlay"
+                app:layout_constraintEnd_toStartOf="@+id/less_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/less_button"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/more_button_desc"
+                android:src="@drawable/baseline_more_vert_white_24"
+                app:layout_constraintBottom_toBottomOf="@id/fixed_layout_more_menu"
+                app:layout_constraintEnd_toEndOf="@+id/fixed_layout_more_menu"
+                app:layout_constraintTop_toTopOf="@+id/fixed_layout_more_menu"
+                app:layout_constraintVertical_bias="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,10 +11,10 @@
         android:label="@string/title_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_dataList"
         android:name="com.test.mylupusproject.ui.data.DocumentFragment"
         android:label="@string/title_data"
-        tools:layout="@layout/frament_data_lists" />
+        tools:layout="@layout/fragment_data_lists" />
 
     <fragment
         android:id="@+id/navigation_notifications"
