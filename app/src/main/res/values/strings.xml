@@ -10,4 +10,5 @@
     <string name="delete_button_desc">Tap to delete</string>
     <string name="arrow_button_desc">To show sub items</string>
     <string name="more_button_desc">Show option</string>
+    <string name="add">Add New</string>
 </resources>

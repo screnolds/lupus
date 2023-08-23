@@ -140,6 +140,7 @@ public DocumentAdapter(View root, Context context, FragmentManager fragmentManag
                 if (editText.getVisibility() == View.GONE) {
                     editText.setVisibility(View.VISIBLE);
                 }
+                editText.setHint("Enter Group Name");
                 editText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
                 if (!imm.isAcceptingText()) {

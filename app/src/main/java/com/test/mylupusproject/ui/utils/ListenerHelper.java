@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,11 +24,14 @@ import androidx.fragment.app.FragmentManager;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.ObservableSnapshotArray;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.test.mylupusproject.R;
 import com.test.mylupusproject.ui.data.DocumentGroupsFragment;
 import com.test.mylupusproject.ui.data.DocumentModel;
@@ -51,6 +56,7 @@ public class ListenerHelper {
     ConstraintLayout moreMenu = null;
     FragmentManager fragmentManager = null;
     EditText addNewDocEditText = null;
+    FirebaseFirestore db = null;
 
     int containerId = 0;
 
@@ -72,6 +78,7 @@ public class ListenerHelper {
         moreMenu = view.findViewById(R.id.fixed_layout_more_menu);
         moreMenu.setVisibility(View.GONE);
         addNewDocEditText = view.findViewById(R.id.document_name_edit);
+        db = FirebaseFirestore.getInstance();
     }
 
     public void addArrowButtonClickListeners() {
@@ -93,10 +100,8 @@ public class ListenerHelper {
         if (toggle && hiddenView.getVisibility() == View.VISIBLE) {
             hiddenView.setVisibility(View.GONE);
             arrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_right_24);
-        }
-
-        // If the CardView is not expanded, set its visibility to visible and change the expand more icon to expand less.
-        else {
+        } else {
+            // If the CardView is not expanded, set its visibility to visible and change the expand more icon to expand less.
 //            expandCardView(containerId, fragmentManager);
             expandCardView();
             if (reloadMoreMenu == true) {
@@ -115,13 +120,14 @@ public class ListenerHelper {
         Fragment fragment = fragmentManager.findFragmentByTag(docId);
         if (fragment == null) {
             if (documentModel.getChildrenType().equals("groups")) {
-                fragment = new DocumentGroupsFragment(documentModel.getPath() + "/groups");
                 Log.d("ListenerHelper", "expandCardView: Adding new group fragment: " + docId + " ContainerId: " + containerId);
+                fragment = new DocumentGroupsFragment(documentModel.getPath() + "/groups");
+                fragmentManager.beginTransaction().add(containerId, fragment, docId).commit();
             } else if (documentModel.getChildrenType().equals("values")) {
-                fragment = new DocumentValuesFragment(documentModel.getPath() + "/values");
                 Log.d("ListenerHelper", "expandCardView: Adding new value fragment: " + docId + " ContainerId: " + containerId);
+                fragment = new DocumentValuesFragment(documentModel.getPath() + "/values");
+                fragmentManager.beginTransaction().add(containerId, fragment, docId).commit();
             }
-            fragmentManager.beginTransaction().add(containerId, fragment, docId).commit();
         } else {
             if (!fragment.isVisible()) {
                 Log.d("ListenerHelper", "expandCardView: Fragment already exists but not visible: " + docId);
@@ -132,18 +138,23 @@ public class ListenerHelper {
 
     public void addMoreButtonClickListeners() {
         LinearLayout addFolderButtonContainer =  view.findViewById(R.id.add_folder_button_container);
-        if (docType.contentEquals("root") && documentModel.getChildrenType().contentEquals("groups")) {
+        if (documentModel.getChildrenType().contentEquals("null") || (docType.contentEquals("root") && documentModel.getChildrenType().contentEquals("groups"))) {
             ImageButton addFolderButtonContainerOverlay =  view.findViewById(R.id.add_folder_button_container_overlay);
             addFolderButtonContainerOverlay.setOnClickListener(addFolderButtonContainerOverlayView -> {
                 Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Clicked");
                 animateSlideMenuRight();
+
+                if (documentModel.getChildrenType().contentEquals("null")) {
+                    db.document(documentModel.getPath()).update("childrenType", "groups");
+                }
+
                 DocumentModel newDocument = new DocumentModel(null, "values", documentModel.getPath() + "/groups", "AAAAAAAA");
-                FirebaseFirestore.getInstance().collection(documentModel.getPath() + "/groups").add(newDocument)
+                db.collection(documentModel.getPath() + "/groups").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Adding new document place holder: " +  documentReference.getId());
-                                FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
+                                db.document(documentReference.getPath()).update("path", documentReference.getPath());
                                 expandCollapseCardView(false);
                             }
                         })
@@ -161,19 +172,23 @@ public class ListenerHelper {
         }
 
         LinearLayout addButtonContainer =  view.findViewById(R.id.add_button_container);
-        if (docType.contentEquals("groups") || (docType.contentEquals("root") && documentModel.getChildrenType().contentEquals("values"))) {
+        if (documentModel.getChildrenType().contentEquals("null") || docType.contentEquals("groups") || (docType.contentEquals("root") && documentModel.getChildrenType().contentEquals("values"))) {
             ImageButton addButtonContainerOverlay =  view.findViewById(R.id.add_button_container_overlay);
             addButtonContainerOverlay.setOnClickListener(addFolderButtonContainerOverlayView -> {
                 Log.d("ListenerHelper", "addButtonContainerOverlay: Clicked for " + documentModel.getDocId());
                 animateSlideMenuRight();
 
-                DocumentModel newDocument = new DocumentModel(null, null, documentModel.getPath() + "/values", "AAAAAAAA");
-                FirebaseFirestore.getInstance().collection(documentModel.getPath() + "/values").add(newDocument)
+                if (documentModel.getChildrenType().contentEquals("null")) {
+                    db.document(documentModel.getPath()).update("childrenType", "values");
+                }
+
+                DocumentModel newDocument = new DocumentModel(null, "none", documentModel.getPath() + "/values", "AAAAAAAA");
+                db.collection(documentModel.getPath() + "/values").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d("ListenerHelper", "addButtonContainerOverlay: Adding new document place holder: " +  documentReference.getId());
-                                FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
+                                db.document(documentReference.getPath()).update("path", documentReference.getPath());
                                 expandCollapseCardView(false);
                             }
                         })
@@ -210,7 +225,7 @@ public class ListenerHelper {
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Log.d("ListenerHelper", "deleteButton Confirmed: Clicked for " + documentName);
-                            FirebaseFirestore.getInstance().document(documentModel.getPath()).delete()
+                            db.document(documentModel.getPath()).delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
@@ -286,18 +301,33 @@ public class ListenerHelper {
                     case EditorInfo.IME_ACTION_DONE:
                         String text = addNewDocEditText.getText().toString().trim();
                         if (text.length() > 0) {
-                            addNewDocEditText.setText(null);
-                            FirebaseFirestore.getInstance().document(documentModel.getPath()).update("name", text)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            String collectionPath = documentModel.getPath().replace("/" + documentModel.getDocId(), "");
+                            db.collection(collectionPath).whereEqualTo("name", text).get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
-                                        public void onSuccess(Void unused) {
-                                            Log.d("ListenerHelper", "Updated new document name to: " + text);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            //TODO
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                if (task.getResult().size() <= 0) {
+                                                    db.document(documentModel.getPath()).update("name", text)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    Log.d("ListenerHelper", "Updated new document name to: " + text);
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    //TODO
+                                                                }
+                                                            });
+                                                } else {
+                                                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                                                    alert.setTitle("The specified name already exists. Please enter a different name.").setCancelable(false);
+                                                    alert.setPositiveButton(android.R.string.yes, null);
+                                                    alert.show();
+                                                }
+                                            }
                                         }
                                     });
                         }
@@ -317,9 +347,14 @@ public class ListenerHelper {
             addNewDocEditText.setVisibility(View.VISIBLE);
         }
         addNewDocEditText.setHint(documentModel.getName());
+        addNewDocEditText.setText(documentModel.getName());
         addNewDocEditText.requestFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    public void addRootLevelDocument() {
+
     }
 //    private View getParentView(View view) {
 //        if (view.getParent() instanceof View) {
