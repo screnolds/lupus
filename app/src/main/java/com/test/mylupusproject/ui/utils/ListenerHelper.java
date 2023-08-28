@@ -121,11 +121,11 @@ public class ListenerHelper {
         if (fragment == null) {
             if (documentModel.getChildrenType().equals("groups")) {
                 Log.d("ListenerHelper", "expandCardView: Adding new group fragment: " + docId + " ContainerId: " + containerId);
-                fragment = new DocumentGroupsFragment(documentModel.getPath() + "/groups");
+                fragment = new DocumentGroupsFragment(documentModel.getPath()  + "/" + documentModel.getDocId() + "/groups");
                 fragmentManager.beginTransaction().add(containerId, fragment, docId).commit();
             } else if (documentModel.getChildrenType().equals("values")) {
                 Log.d("ListenerHelper", "expandCardView: Adding new value fragment: " + docId + " ContainerId: " + containerId);
-                fragment = new DocumentValuesFragment(documentModel.getPath() + "/values");
+                fragment = new DocumentValuesFragment(documentModel.getPath()  + "/" + documentModel.getDocId() + "/values");
                 fragmentManager.beginTransaction().add(containerId, fragment, docId).commit();
             }
         } else {
@@ -141,20 +141,20 @@ public class ListenerHelper {
         if (documentModel.getChildrenType().contentEquals("null") || (docType.contentEquals("root") && documentModel.getChildrenType().contentEquals("groups"))) {
             ImageButton addFolderButtonContainerOverlay =  view.findViewById(R.id.add_folder_button_container_overlay);
             addFolderButtonContainerOverlay.setOnClickListener(addFolderButtonContainerOverlayView -> {
-                Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Clicked");
+                Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Clicked ContainerId: " + containerId);
                 animateSlideMenuRight();
 
                 if (documentModel.getChildrenType().contentEquals("null")) {
-                    db.document(documentModel.getPath()).update("childrenType", "groups");
+                    db.document(documentModel.getPath() + "/" + documentModel.getDocId()).update("childrenType", "groups");
                 }
 
-                DocumentModel newDocument = new DocumentModel(null, "values", documentModel.getPath() + "/groups", "AAAAAAAA");
-                db.collection(documentModel.getPath() + "/groups").add(newDocument)
+                DocumentModel newDocument = new DocumentModel(null, "values", documentModel.getPath() + "/" + documentModel.getDocId() + "/groups", "AAAAAAAA");
+                db.collection(documentModel.getPath() + "/" + documentModel.getDocId() + "/groups").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Adding new document place holder: " +  documentReference.getId());
-                                db.document(documentReference.getPath()).update("path", documentReference.getPath());
+                                //db.document(documentReference.getPath() + "/" + documentModel.getDocId()).update("path", documentReference.getPath());
                                 expandCollapseCardView(false);
                             }
                         })
@@ -179,16 +179,16 @@ public class ListenerHelper {
                 animateSlideMenuRight();
 
                 if (documentModel.getChildrenType().contentEquals("null")) {
-                    db.document(documentModel.getPath()).update("childrenType", "values");
+                    db.document(documentModel.getPath()  + "/" + documentModel.getDocId()).update("childrenType", "values");
                 }
 
-                DocumentModel newDocument = new DocumentModel(null, "none", documentModel.getPath() + "/values", "AAAAAAAA");
+                DocumentModel newDocument = new DocumentModel(null, "none", documentModel.getPath() + "/" + documentModel.getDocId() + "/values", "AAAAAAAA");
                 db.collection(documentModel.getPath() + "/values").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d("ListenerHelper", "addButtonContainerOverlay: Adding new document place holder: " +  documentReference.getId());
-                                db.document(documentReference.getPath()).update("path", documentReference.getPath());
+                                //db.document(documentReference.getPath()).update("path", documentReference.getPath());
                                 expandCollapseCardView(false);
                             }
                         })
@@ -225,7 +225,7 @@ public class ListenerHelper {
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Log.d("ListenerHelper", "deleteButton Confirmed: Clicked for " + documentName);
-                            db.document(documentModel.getPath()).delete()
+                            db.document(documentModel.getPath()  + "/" + documentModel.getDocId()).delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
@@ -301,18 +301,19 @@ public class ListenerHelper {
                     case EditorInfo.IME_ACTION_DONE:
                         String text = addNewDocEditText.getText().toString().trim();
                         if (text.length() > 0) {
-                            String collectionPath = documentModel.getPath().replace("/" + documentModel.getDocId(), "");
+                            //String collectionPath = documentModel.getPath().replace("/" + documentModel.getDocId(), "");
+                            String collectionPath = documentModel.getPath();
                             db.collection(collectionPath).whereEqualTo("name", text).get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
                                                 if (task.getResult().size() <= 0) {
-                                                    db.document(documentModel.getPath()).update("name", text)
+                                                    db.document(documentModel.getPath() + "/" + documentModel.getDocId()).update("name", text)
                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
-                                                                    Log.d("ListenerHelper", "Updated new document name to: " + text);
+                                                                    Log.d("ListenerHelper", "Updated new document name to: " + text + " ContainerId: " + containerId);
                                                                 }
                                                             })
                                                             .addOnFailureListener(new OnFailureListener() {

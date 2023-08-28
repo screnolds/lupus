@@ -70,7 +70,7 @@ public class DocumentFragment extends Fragment {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d("DocumentFragment", "addRootItem: Adding new document place holder: " +  documentReference.getId());
-                                FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
+                                //FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
