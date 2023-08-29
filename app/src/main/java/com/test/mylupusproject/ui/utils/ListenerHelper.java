@@ -83,7 +83,7 @@ public class ListenerHelper {
 
     public void addArrowButtonClickListeners() {
         arrow.setOnClickListener(view -> {
-            Log.d("ListenerHelper", "addArrowButtonClickListeners: Clicked for " + documentModel.getDocId());
+            Log.d("ListenerHelper", "addArrowButtonClickListeners: Clicked for " + documentModel.getDocId() + " ContainerId: " + containerId);
             animateSlideMenuRight();
             expandCollapseCardView(true);
         });
@@ -130,7 +130,7 @@ public class ListenerHelper {
             }
         } else {
             if (!fragment.isVisible()) {
-                Log.d("ListenerHelper", "expandCardView: Fragment already exists but not visible: " + docId);
+                Log.d("ListenerHelper", "expandCardView: Fragment already exists but not visible: " + docId  + " ContainerId: " + containerId);
                 fragmentManager.beginTransaction().show(fragment).commit();
             }
         }
@@ -148,12 +148,13 @@ public class ListenerHelper {
                     db.document(documentModel.getPath() + "/" + documentModel.getDocId()).update("childrenType", "groups");
                 }
 
+                Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Adding new document place holder: AAAAAAAA ContainerId: " + containerId);
                 DocumentModel newDocument = new DocumentModel(null, "values", documentModel.getPath() + "/" + documentModel.getDocId() + "/groups", "AAAAAAAA");
                 db.collection(documentModel.getPath() + "/" + documentModel.getDocId() + "/groups").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                Log.d("ListenerHelper", "addFolderButtonContainerOverlay: Adding new document place holder: " +  documentReference.getId());
+                                Log.d("ListenerHelper", "addFolderButtonContainerOverlay:Document place holder added: " +  documentReference.getId() + "ContainerId: " + containerId);
                                 //db.document(documentReference.getPath() + "/" + documentModel.getDocId()).update("path", documentReference.getPath());
                                 expandCollapseCardView(false);
                             }
@@ -175,19 +176,20 @@ public class ListenerHelper {
         if (documentModel.getChildrenType().contentEquals("null") || docType.contentEquals("groups") || (docType.contentEquals("root") && documentModel.getChildrenType().contentEquals("values"))) {
             ImageButton addButtonContainerOverlay =  view.findViewById(R.id.add_button_container_overlay);
             addButtonContainerOverlay.setOnClickListener(addFolderButtonContainerOverlayView -> {
-                Log.d("ListenerHelper", "addButtonContainerOverlay: Clicked for " + documentModel.getDocId());
+                Log.d("ListenerHelper", "addButtonContainerOverlay: Clicked for " + documentModel.getDocId()  + "ContainerId: " + containerId);
                 animateSlideMenuRight();
 
                 if (documentModel.getChildrenType().contentEquals("null")) {
                     db.document(documentModel.getPath()  + "/" + documentModel.getDocId()).update("childrenType", "values");
                 }
 
+                Log.d("ListenerHelper", "addButtonContainerOverlay: Adding new document place holder: AAAAAAAA" +  "ContainerId: " + containerId);
                 DocumentModel newDocument = new DocumentModel(null, "none", documentModel.getPath() + "/" + documentModel.getDocId() + "/values", "AAAAAAAA");
                 db.collection(documentModel.getPath() + "/values").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                Log.d("ListenerHelper", "addButtonContainerOverlay: Adding new document place holder: " +  documentReference.getId());
+                                Log.d("ListenerHelper", "addButtonContainerOverlay: New document place holder added for:" + documentReference.getId() + "ContainerId: " + containerId);
                                 //db.document(documentReference.getPath()).update("path", documentReference.getPath());
                                 expandCollapseCardView(false);
                             }
@@ -208,7 +210,7 @@ public class ListenerHelper {
         ImageButton editButtonContainerOverlay =  view.findViewById(R.id.edit_button_container_overlay);
         if (editButtonContainerOverlay != null) {
             editButtonContainerOverlay.setOnClickListener(editButtonContainerOverlayView -> {
-                Log.d("ListenerHelper", "editButtonContainerOverlay: Clicked for " + documentModel.getDocId());
+                Log.d("ListenerHelper", "editButtonContainerOverlay: Clicked for " + documentModel.getDocId() + "ContainerId: " + containerId);
                 animateSlideMenuRight();
                 togglePlacholderView();
             });
@@ -218,18 +220,18 @@ public class ListenerHelper {
         if (deleteButtonContainerOverlay != null) {
             String documentName = documentModel.getName();
             deleteButtonContainerOverlay.setOnClickListener(deleteButtonContainerOverlayView -> {
-                Log.d("ListenerHelper", "deleteButtonContainerOverlay: Clicked for " + documentName);
+                Log.d("ListenerHelper", "deleteButtonContainerOverlay: Clicked for " + documentName + "ContainerId: " + containerId);
                 animateSlideMenuRight();
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setTitle("Are you sure you want to delete?").setCancelable(false);
                 alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Log.d("ListenerHelper", "deleteButton Confirmed: Clicked for " + documentName);
+                            Log.d("ListenerHelper", "deleteButton Confirmed: Clicked for " + documentName + "ContainerId: " + containerId);
                             db.document(documentModel.getPath()  + "/" + documentModel.getDocId()).delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            Log.d("ListenerHelper", "Document deleted: " + documentName);
+                                            Log.d("ListenerHelper", "Document deleted: " + documentName + "ContainerId: " + containerId);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {

@@ -29,13 +29,14 @@ import javax.annotation.Nonnull;
 public class DocumentFragment extends Fragment {
 
     private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> recyclerAdapter = null;
+    private RecyclerView recyclerView = null;
     private static final String TAG = "DataList";
     private Context context = null;
 
     public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getContext();
         View root = inflater.inflate(R.layout.fragment_data_lists, container, false);
-        RecyclerView recyclerView = root.findViewById(R.id.document_recycler_view);
+        recyclerView = root.findViewById(R.id.document_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         FragmentActivity fragmentActivity = getActivity();
         recyclerAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Root", fragmentActivity).getAdapter("root");
@@ -63,13 +64,13 @@ public class DocumentFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.add:
-                Log.d("DocumentFragment", "addRootItem: Clicked");
+                Log.d("DocumentFragment", "addRootItem: Adding new document place holder: AAAAAAAA");
                 DocumentModel newDocument = new DocumentModel(null, "null", "Root", "AAAAAAAA");
                 FirebaseFirestore.getInstance().collection("Root").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                Log.d("DocumentFragment", "addRootItem: Adding new document place holder: " +  documentReference.getId());
+                                Log.d("DocumentFragment", "addRootItem: Document place holder added: " +  documentReference.getId());
                                 //FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
                             }
                         })
