@@ -32,14 +32,28 @@ public class DocumentFragment extends Fragment {
     private RecyclerView recyclerView = null;
     private static final String TAG = "DataList";
     private Context context = null;
+    private DocumentAdapter documentAdapter = null;
 
     public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getContext();
         View root = inflater.inflate(R.layout.fragment_data_lists, container, false);
         recyclerView = root.findViewById(R.id.document_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        ExpandHelper expandHelper = new ExpandHelper();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context) {
+            @Override
+            public void onLayoutCompleted(RecyclerView.State state) {
+                //Log.d("DocumentFragment", "onLayoutCompleted: " + state);
+                if (expandHelper.getExpandValue() == true) {
+                    DocumentAdapter.ViewHolder viewHolder = (DocumentAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(expandHelper.getPosition());
+                    Log.d("DocumentFragment", "onLayoutCompleted: ViewHolder ContainerId: " + viewHolder.getContainerId());
+                    viewHolder.getListenerHelper().expandCollapseCardView(false);
+                    expandHelper.reset();
+                }
+            }
+        });
         FragmentActivity fragmentActivity = getActivity();
-        recyclerAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Root", fragmentActivity).getAdapter("root");
+        documentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Root", fragmentActivity, expandHelper);
+        recyclerAdapter = documentAdapter.getAdapter("root");
         recyclerView.setAdapter(recyclerAdapter);
         setHasOptionsMenu(true);
         return root;
@@ -80,7 +94,6 @@ public class DocumentFragment extends Fragment {
                                 Log.d("DocumentFragment", "Error adding document", e);
                             }
                         });
-
                 return true;
         }
         return false;

@@ -26,6 +26,7 @@ public class DocumentGroupsFragment extends Fragment {
     private static final String TAG = "DataListGroups";
     private Context context = null;
     private String queryString = null;
+    private DocumentAdapter documentAdapter = null;
 
     public DocumentGroupsFragment(String queryString) {
         this.queryString = queryString;
@@ -37,9 +38,9 @@ public class DocumentGroupsFragment extends Fragment {
         RecyclerView recyclerView = root.findViewById(R.id.document_group_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         FragmentActivity fragmentActivity = getActivity();
-//        BottomNavigationView navBar = getActivity().findViewById(R.id.nav_view);
-//        recyclerAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), queryString, navBar).getAdapter("groups");
-        recyclerAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), queryString, fragmentActivity).getAdapter("groups");
+        ExpandHelper expandHelper = new ExpandHelper();
+        documentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), queryString, fragmentActivity, expandHelper);
+        recyclerAdapter = documentAdapter.getAdapter("groups");
         recyclerView.setAdapter(recyclerAdapter);
         return root;
     }

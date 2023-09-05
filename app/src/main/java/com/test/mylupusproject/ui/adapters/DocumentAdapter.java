@@ -22,10 +22,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.test.mylupusproject.R;
 import com.test.mylupusproject.ui.data.DocumentModel;
+import com.test.mylupusproject.ui.data.ExpandHelper;
 import com.test.mylupusproject.ui.utils.ListenerHelper;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class DocumentAdapter {
@@ -37,13 +39,15 @@ public class DocumentAdapter {
     private String queryString = null;
     private String docType = null;
     private FragmentActivity mainFragmentActivity = null;
+    private ExpandHelper expandHelper = null;
 
-public DocumentAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity mainFragmentActivity) {
+public DocumentAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity mainFragmentActivity, ExpandHelper expandHelper) {
         this.root = root;
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.queryString = queryString;
         this.mainFragmentActivity = mainFragmentActivity;
+        this.expandHelper = expandHelper;
     }
 
     public FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> getAdapter(String docType) {
@@ -53,13 +57,13 @@ public DocumentAdapter(View root, Context context, FragmentManager fragmentManag
         documentAdapter = new FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull DocumentModel documentModel) {
-                Log.d(TAG, "Binding: " + documentModel.getName() + " Position: " + position);
+                holder.setDocumentModelName(documentModel.getName());
                 holder.togglePlacholderView(documentModel.getName());
                 holder.setListName(documentModel.getName());
                 holder.updateContainerId();
-                holder.setListeners(documentModel);
                 holder.setCardColor();
-
+                holder.setListeners(documentModel, expandHelper, position);
+                Log.d(TAG, "Binding: " + documentModel.getName() + " Position: " + position + " ContainerId: " + holder.containerId);
             }
 
             @NonNull
@@ -75,17 +79,28 @@ public DocumentAdapter(View root, Context context, FragmentManager fragmentManag
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
-        private String documentName;
         private Context context;
         private int containerId;
         private Random r;
         private ListenerHelper listenerHelper = null;
-
+        private String documentName = "";
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             view = itemView;
             this.context = context;
             r = new Random();
+        }
+
+        void setDocumentModelName(String documentName) {
+            this.documentName = documentName;
+        }
+
+        public ListenerHelper getListenerHelper() {
+            return this.listenerHelper;
+        }
+
+        public int getContainerId() {
+            return containerId;
         }
 
         void updateContainerId() {
@@ -96,7 +111,6 @@ public DocumentAdapter(View root, Context context, FragmentManager fragmentManag
                     containerId = r.nextInt(1000000);
                 }
                 fragmentContainerView.setId(containerId);
-                Log.d(TAG, "New ContainerId: " + fragmentContainerView.getId());
             }
         }
 
@@ -122,8 +136,8 @@ public DocumentAdapter(View root, Context context, FragmentManager fragmentManag
             }
         }
 
-        void setListeners(@NonNull DocumentModel documentModel) {
-            listenerHelper = new ListenerHelper(root, view, mainFragmentActivity, documentModel, context, docType, containerId, fragmentManager);
+        void setListeners(@NonNull DocumentModel documentModel, ExpandHelper expandHelper, int position) {
+            listenerHelper = new ListenerHelper(root, view, mainFragmentActivity, documentModel, context, docType, containerId, fragmentManager, expandHelper, position);
             listenerHelper.addArrowButtonClickListeners();
             listenerHelper.addMoreButtonClickListeners();
             listenerHelper.addLessButtonClickListeners();
@@ -141,10 +155,11 @@ public DocumentAdapter(View root, Context context, FragmentManager fragmentManag
                     editText.setVisibility(View.VISIBLE);
                 }
                 editText.setHint("Enter Group Name");
+                editText.setText("");
                 editText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
                 if (!imm.isAcceptingText()) {
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
                 }
             } else {
                 if (textView.getVisibility() == View.GONE) {

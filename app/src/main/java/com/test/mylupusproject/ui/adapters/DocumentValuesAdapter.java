@@ -20,6 +20,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.test.mylupusproject.R;
 import com.test.mylupusproject.ui.data.DocumentModel;
+import com.test.mylupusproject.ui.data.ExpandHelper;
 import com.test.mylupusproject.ui.utils.ListenerHelper;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -33,15 +34,16 @@ public class DocumentValuesAdapter {
     private Context context = null;
     private FragmentManager fragmentManager = null;
     private String queryString = null;
-    private boolean opened;
     private FragmentActivity mainFragmentActivity = null;
+    private ExpandHelper expandHelper = null;
 
-public DocumentValuesAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity mainFragmentActivity) {
+public DocumentValuesAdapter(View root, Context context, FragmentManager fragmentManager, String queryString, FragmentActivity mainFragmentActivity, ExpandHelper expandHelper) {
         this.root = root;
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.queryString = queryString;
         this.mainFragmentActivity = mainFragmentActivity;
+        this.expandHelper = expandHelper;
     }
 
     public FirestoreRecyclerAdapter<DocumentModel, DocumentValuesAdapter.ViewHolder> getAdapter() {
@@ -50,11 +52,11 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
         documentAdapter = new FirestoreRecyclerAdapter<DocumentModel, DocumentValuesAdapter.ViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull DocumentModel documentModel) {
-                Log.d(TAG, "Binding: " + documentModel.getName() + " Position: " + position);
                 holder.togglePlacholderView(documentModel.getName());
                 holder.setItemName(documentModel.getName());
                 holder.updateContainerId();
-                holder.setListeners(documentModel);
+                holder.setListeners(documentModel, expandHelper, position);
+                Log.d(TAG, "Binding: " + documentModel.getName() + " Position: " + position);
             }
 
             @NonNull
@@ -89,8 +91,15 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
                     containerId = r.nextInt(1000000);
                 }
                 fragmentContainerView.setId(containerId);
-                Log.d(TAG, "New ContainerId: " + fragmentContainerView.getId());
             }
+        }
+
+        public ListenerHelper getListenerHelper() {
+            return this.listenerHelper;
+        }
+
+        public int getContainerId() {
+            return containerId;
         }
 
         void setItemName(String documentName) {
@@ -98,8 +107,8 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
             textView.setText(documentName);
         }
 
-        void setListeners(@NonNull DocumentModel documentModel) {
-            listenerHelper = new ListenerHelper(root, view, mainFragmentActivity, documentModel, context, "item", containerId, fragmentManager);
+        void setListeners(@NonNull DocumentModel documentModel, ExpandHelper expandHelper, int position) {
+            listenerHelper = new ListenerHelper(root, view, mainFragmentActivity, documentModel, context, "item", containerId, fragmentManager, expandHelper, position);
             listenerHelper.addMoreButtonClickListeners();
             listenerHelper.addLessButtonClickListeners();
             listenerHelper.addEditTextDoneListener();
@@ -115,6 +124,8 @@ public DocumentValuesAdapter(View root, Context context, FragmentManager fragmen
                 if (editText.getVisibility() == View.GONE) {
                     editText.setVisibility(View.VISIBLE);
                 }
+                editText.setHint("Enter Item Name");
+                editText.setText("");
                 editText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
                 if (!imm.isAcceptingText()) {
