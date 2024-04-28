@@ -84,18 +84,11 @@ import java.util.List;
 //                textView.setText(s);
 //            }
 //        });
-        setHasOptionsMenu(true);
         return root;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().invalidateOptionsMenu();
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.add).setVisible(false);
     }
 }
