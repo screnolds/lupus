@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,14 +30,22 @@ import javax.annotation.Nonnull;
 public class DocumentFragment extends Fragment {
 
     private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> recyclerAdapter = null;
+    private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> eventRecyclerAdapter = null;
     private RecyclerView recyclerView = null;
+    private RecyclerView eventRecyclerView = null;
     private static final String TAG = "DataList";
     private Context context = null;
     private DocumentAdapter documentAdapter = null;
+    private DocumentAdapter eventDocumentAdapter = null;
 
     public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getContext();
         View root = inflater.inflate(R.layout.fragment_data_lists, container, false);
+        TextView eventLabel = root.findViewById(R.id.event_label);
+        eventLabel.getPaint().setUnderlineText(true);
+        TextView causesLabel = root.findViewById(R.id.causes_label);
+        causesLabel.getPaint().setUnderlineText(true);
+
         recyclerView = root.findViewById(R.id.document_recycler_view);
         ExpandHelper expandHelper = new ExpandHelper();
         recyclerView.setLayoutManager(new LinearLayoutManager(context) {
@@ -52,9 +61,28 @@ public class DocumentFragment extends Fragment {
             }
         });
         FragmentActivity fragmentActivity = getActivity();
-        documentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Root", fragmentActivity, expandHelper);
+        documentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Causes", fragmentActivity, expandHelper);
         recyclerAdapter = documentAdapter.getAdapter("root");
         recyclerView.setAdapter(recyclerAdapter);
+
+        eventRecyclerView = root.findViewById(R.id.event_document_recycler_view);
+        ExpandHelper eventExpandHelper = new ExpandHelper();
+        eventRecyclerView.setLayoutManager(new LinearLayoutManager(context) {
+            @Override
+            public void onLayoutCompleted(RecyclerView.State state) {
+                //Log.d("DocumentFragment", "onLayoutCompleted: " + state);
+                if (eventExpandHelper.getExpandValue() == true) {
+                    DocumentAdapter.ViewHolder viewHolder = (DocumentAdapter.ViewHolder) eventRecyclerView.findViewHolderForAdapterPosition(eventExpandHelper.getPosition());
+                    Log.d("DocumentFragment Event", "onLayoutCompleted: ViewHolder ContainerId: " + viewHolder.getContainerId());
+                    viewHolder.getListenerHelper().expandCollapseCardView(false);
+                    eventExpandHelper.reset();
+                }
+            }
+        });
+        eventDocumentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Events", fragmentActivity, eventExpandHelper);
+        eventRecyclerAdapter = eventDocumentAdapter.getAdapter("root");
+        eventRecyclerView.setAdapter(eventRecyclerAdapter);
+
         setHasOptionsMenu(true);
         return root;
     }
@@ -63,6 +91,7 @@ public class DocumentFragment extends Fragment {
     public void onStart() {
         super.onStart();
         recyclerAdapter.startListening();
+        eventRecyclerAdapter.startListening();
     }
 
     @Override
@@ -72,6 +101,9 @@ public class DocumentFragment extends Fragment {
         if (recyclerAdapter != null) {
             recyclerAdapter.stopListening();
         }
+        if (eventRecyclerAdapter != null) {
+            eventRecyclerAdapter.stopListening();
+        }
     }
 
     @Override
@@ -79,8 +111,8 @@ public class DocumentFragment extends Fragment {
         switch(item.getItemId()) {
             case R.id.add:
                 Log.d("DocumentFragment", "addRootItem: Adding new document place holder: AAAAAAAA");
-                DocumentModel newDocument = new DocumentModel(null, "null", "Root", "AAAAAAAA");
-                FirebaseFirestore.getInstance().collection("Root").add(newDocument)
+                DocumentModel newDocument = new DocumentModel(null, "null", "Causes", "AAAAAAAA");
+                FirebaseFirestore.getInstance().collection("Causes").add(newDocument)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {

@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -35,8 +37,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class HomeFragment extends Fragment {
+    public class HomeFragment extends Fragment {
 
     private static final String TAG = "HOME";
     //private HomeViewModel homeViewModel;
@@ -47,22 +51,27 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         //homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.pain_type);
+        //final TextView textView = root.findViewById(R.id.pain_type);
+        AutoCompleteTextView autoCompleteTextView = root.findViewById(R.id.autoCompleteTextView);
+        //String[] Subjects = new String[]{"Android", "Flutter", "React Native"};
+        List<String> subjects = new ArrayList<>();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), R.layout.dropdown_item, subjects);
+        autoCompleteTextView.setAdapter(adapter);
         //GetTextFromSQL(textView);
         //new HttpGetTask("https://us-west4-mylupusproject.cloudfunctions.net/pain?date=today",textView).execute();
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Pain").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("Events").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 String data = "";
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " ===========================================================================> " + document.getData());
                         data = document.getString("name");
+                        subjects.add(data);
                     }
-                    textView.setText(data);
+                    adapter.notifyDataSetChanged();
                 } else {
                     Log.w(TAG, "Error getting documents.", task.getException());
                 }

@@ -6,10 +6,78 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="?attr/actionBarSize">
 
+    <TextView
+        android:id="@+id/event_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contingency Event:"
+        android:textColor="@color/evening"
+        android:textSize="15sp"
+        android:textStyle="bold|italic"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintStart_toStartOf="@+id/container"
+        app:layout_constraintTop_toTopOf="@+id/container" />
+
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:id="@+id/event_nested_scroll_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/event_label"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/container">-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/event_document_recycler_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:nestedScrollingEnabled="false"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/event_nested_scroll_view"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/container"/>-->
+<!--    </androidx.core.widget.NestedScrollView>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/event_document_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintTop_toBottomOf="@+id/event_label"
+        app:layout_constraintStart_toStartOf="@+id/container"/>
+
+    <TextView
+        android:id="@+id/causes_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Potential Causes:"
+        android:textColor="@color/evening"
+        android:textSize="15sp"
+        android:textStyle="bold|italic"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintStart_toStartOf="@+id/container"
+        app:layout_constraintTop_toBottomOf="@+id/event_document_recycler_view" />
+
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:id="@+id/causes_nested_scroll_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/causes_label"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/container">-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/document_recycler_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:nestedScrollingEnabled="false"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/causes_nested_scroll_view"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/container" />-->
+<!--    </androidx.core.widget.NestedScrollView>-->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/document_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/causes_label"
+        app:layout_constraintStart_toStartOf="@+id/container" />
 </androidx.constraintlayout.widget.ConstraintLayout>
