@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,7 +88,39 @@ public class DocumentFragment extends Fragment {
         eventRecyclerAdapter = eventDocumentAdapter.getAdapter("root");
         eventRecyclerView.setAdapter(eventRecyclerAdapter);
 
-        setHasOptionsMenu(true);
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_main,menu);
+            }
+            
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()) {
+                    case R.id.add:
+                        Log.d("DocumentFragment", "addRootItem: Adding new document place holder: AAAAAAAA");
+                        DocumentModel newDocument = new DocumentModel(null, "null", "Causes", "AAAAAAAA");
+                        FirebaseFirestore.getInstance().collection("Causes").add(newDocument)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        Log.d("DocumentFragment", "addRootItem: Document place holder added: " +  documentReference.getId());
+                                        //FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("DocumentFragment", "Error adding document", e);
+                                    }
+                                });
+                        return true;
+                }
+                return false;
+            }
+        },getViewLifecycleOwner());
+
         return root;
     }
 
@@ -104,30 +141,5 @@ public class DocumentFragment extends Fragment {
         if (eventRecyclerAdapter != null) {
             eventRecyclerAdapter.stopListening();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.add:
-                Log.d("DocumentFragment", "addRootItem: Adding new document place holder: AAAAAAAA");
-                DocumentModel newDocument = new DocumentModel(null, "null", "Causes", "AAAAAAAA");
-                FirebaseFirestore.getInstance().collection("Causes").add(newDocument)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d("DocumentFragment", "addRootItem: Document place holder added: " +  documentReference.getId());
-                                //FirebaseFirestore.getInstance().document(documentReference.getPath()).update("path", documentReference.getPath());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("DocumentFragment", "Error adding document", e);
-                            }
-                        });
-                return true;
-        }
-        return false;
     }
 }
