@@ -34,13 +34,13 @@ import javax.annotation.Nonnull;
 
 public class DocumentFragment extends Fragment {
 
-    private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> recyclerAdapter = null;
+    private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> causesRecyclerAdapter = null;
     private FirestoreRecyclerAdapter<DocumentModel, DocumentAdapter.ViewHolder> eventRecyclerAdapter = null;
     private RecyclerView recyclerView = null;
     private RecyclerView eventRecyclerView = null;
     private static final String TAG = "DataList";
     private Context context = null;
-    private DocumentAdapter documentAdapter = null;
+    private DocumentAdapter causesDocumentAdapter = null;
     private DocumentAdapter eventDocumentAdapter = null;
 
     public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,9 +66,9 @@ public class DocumentFragment extends Fragment {
             }
         });
         FragmentActivity fragmentActivity = getActivity();
-        documentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Causes", fragmentActivity, expandHelper);
-        recyclerAdapter = documentAdapter.getAdapter("root");
-        recyclerView.setAdapter(recyclerAdapter);
+        causesDocumentAdapter = new DocumentAdapter(root, context, getChildFragmentManager(), "Causes", fragmentActivity, expandHelper);
+        causesRecyclerAdapter = causesDocumentAdapter.getAdapter("root");
+        recyclerView.setAdapter(causesRecyclerAdapter);
 
         eventRecyclerView = root.findViewById(R.id.event_document_recycler_view);
         ExpandHelper eventExpandHelper = new ExpandHelper();
@@ -94,7 +94,7 @@ public class DocumentFragment extends Fragment {
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.menu_main,menu);
             }
-            
+
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 switch(menuItem.getItemId()) {
@@ -127,7 +127,7 @@ public class DocumentFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        recyclerAdapter.startListening();
+        causesRecyclerAdapter.startListening();
         eventRecyclerAdapter.startListening();
     }
 
@@ -135,8 +135,8 @@ public class DocumentFragment extends Fragment {
     public void onStop() {
         super.onStop();
 
-        if (recyclerAdapter != null) {
-            recyclerAdapter.stopListening();
+        if (causesRecyclerAdapter != null) {
+            causesRecyclerAdapter.stopListening();
         }
         if (eventRecyclerAdapter != null) {
             eventRecyclerAdapter.stopListening();
