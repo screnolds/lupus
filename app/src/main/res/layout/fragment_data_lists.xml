@@ -20,26 +20,10 @@
         app:layout_constraintStart_toStartOf="@+id/container"
         app:layout_constraintTop_toTopOf="@+id/container" />
 
-<!--    <androidx.core.widget.NestedScrollView-->
-<!--        android:id="@+id/event_nested_scroll_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/event_label"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/container">-->
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/event_document_recycler_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:nestedScrollingEnabled="false"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/event_nested_scroll_view"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/container"/>-->
-<!--    </androidx.core.widget.NestedScrollView>-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/event_document_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:nestedScrollingEnabled="false"
         app:layout_constraintTop_toBottomOf="@+id/event_label"
         app:layout_constraintStart_toStartOf="@+id/container"/>
@@ -58,26 +42,11 @@
         app:layout_constraintStart_toStartOf="@+id/container"
         app:layout_constraintTop_toBottomOf="@+id/event_document_recycler_view" />
 
-<!--    <androidx.core.widget.NestedScrollView-->
-<!--        android:id="@+id/causes_nested_scroll_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/causes_label"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/container">-->
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/document_recycler_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:nestedScrollingEnabled="false"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/causes_nested_scroll_view"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/container" />-->
-<!--    </androidx.core.widget.NestedScrollView>-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/document_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/causes_label"
-        app:layout_constraintStart_toStartOf="@+id/container" />
+        app:layout_constraintStart_toStartOf="@+id/container"
+        app:layout_constraintBottom_toBottomOf="@+id/container" />
 </androidx.constraintlayout.widget.ConstraintLayout>
