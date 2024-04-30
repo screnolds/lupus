@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuHost;
@@ -92,7 +91,7 @@ public class DocumentFragment extends Fragment {
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.menu_main,menu);
+                menuInflater.inflate(R.menu.menu_datalist,menu);
             }
 
             @Override
@@ -119,7 +118,7 @@ public class DocumentFragment extends Fragment {
                 }
                 return false;
             }
-        },getViewLifecycleOwner());
+        },getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         return root;
     }
