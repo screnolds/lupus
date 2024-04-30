@@ -5,16 +5,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Lifecycle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,21 +23,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.test.mylupusproject.R;
+import com.test.mylupusproject.ui.bottomsheet.BottomSheet;
 
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +76,24 @@ import java.util.List;
 //                textView.setText(s);
 //            }
 //        });
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@androidx.annotation.NonNull Menu menu, @androidx.annotation.NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_home,menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@androidx.annotation.NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()) {
+                    case R.id.add:
+                        BottomSheet BottomSheet = new BottomSheet(false, "Default state");
+                        BottomSheet.show(getChildFragmentManager(), "Normal");
+                }
+                return false;
+            }
+        },getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
         return root;
     }
 
