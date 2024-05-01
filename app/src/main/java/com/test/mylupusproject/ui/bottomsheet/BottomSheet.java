@@ -18,12 +18,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.test.mylupusproject.R;
 
 public class BottomSheet extends BottomSheetDialogFragment {
-    private final String message;
+    private final String title;
     private final boolean isExpanded;
 
-    public BottomSheet(boolean isExpanded, String message) {
+    public BottomSheet(boolean isExpanded, String title) {
         super();
-        this.message = message;
+        this.title = title;
         this.isExpanded = isExpanded;
     }
 
@@ -44,26 +44,13 @@ public class BottomSheet extends BottomSheetDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        if (isExpanded) {
-            //  if you wanna show the bottom sheet as full screen,
-            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-            bottomSheetDialog.setOnShowListener(dialog -> {
-                FrameLayout bottomSheet = ((BottomSheetDialog) dialog)
-                        .findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                if (bottomSheet != null)
-                    BottomSheetBehavior
-                            .from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-            });
-            return bottomSheetDialog;
-        }
         return super.onCreateDialog(savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView tvHello = view.findViewById(R.id.tv_hello);
-        tvHello.setText(message);
+        TextView tvTitle = view.findViewById(R.id.title);
+        tvTitle.setText(title);
     }
 }
