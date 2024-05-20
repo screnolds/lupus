@@ -6,70 +6,90 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingHorizontal="16dp">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true"
-        android:overScrollMode="never"
-        android:scrollbarSize="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UselessParent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:orientation="horizontal"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="10dp"
-                android:text="BottomSheetDialogFragment"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/close"
                 android:textColor="@android:color/primary_text_light"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_hello"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="10dp"
-                android:text="Hello World"
-                android:textColor="@android:color/secondary_text_light"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:layout_alignParentEnd="true"
+                android:background="@color/white"
+                android:src="@drawable/baseline_close_24"
+                tools:ignore="HardcodedText,TouchTargetSizeCheck"
+                android:contentDescription="Close Modal" />
+        </RelativeLayout>
 
-            <TextView
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header" />
+
+        <FrameLayout
+            android:id="@+id/userInputFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/rounded_grey_frame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider">
+
+            <EditText
+                android:id="@+id/userInput"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="10dp"
-                android:text="Sample codes by https://altotunchitoo.me"
-                android:textColor="@android:color/secondary_text_light"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:background="@android:color/transparent"
+                android:gravity="start"
+                android:hint="@string/enter_event_name"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="200"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="#616161"
+                android:textSize="16sp"
+                android:importantForAutofill="no"/>
+        </FrameLayout>
 
-        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/doneButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="32dp"
+            android:backgroundTint="@color/evergreen"
+            android:enabled="false"
+            android:text="@string/dialog_continue"
+            app:cornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userInputFrame" />
 
-    </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

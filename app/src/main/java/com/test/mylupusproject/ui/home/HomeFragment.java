@@ -87,7 +87,7 @@ import java.util.List;
             public boolean onMenuItemSelected(@androidx.annotation.NonNull MenuItem menuItem) {
                 switch(menuItem.getItemId()) {
                     case R.id.add:
-                        BottomSheet BottomSheet = new BottomSheet(false, "Default state");
+                        BottomSheet BottomSheet = new BottomSheet(false, "Add Event");
                         BottomSheet.show(getChildFragmentManager(), "Normal");
                 }
                 return false;

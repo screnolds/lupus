@@ -2,10 +2,15 @@ package com.test.mylupusproject.ui.bottomsheet;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,12 +23,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.test.mylupusproject.R;
 
 public class BottomSheet extends BottomSheetDialogFragment {
-    private final String message;
+    private final String title;
     private final boolean isExpanded;
 
-    public BottomSheet(boolean isExpanded, String message) {
+    public BottomSheet(boolean isExpanded, String title) {
         super();
-        this.message = message;
+        this.title = title;
         this.isExpanded = isExpanded;
     }
 
@@ -35,35 +40,39 @@ public class BottomSheet extends BottomSheetDialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.bottom_sheet, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.bottom_sheet, container, false);
+        EditText editText = root.findViewById(R.id.userInput);
+        Button doneButton = root.findViewById(R.id.doneButton);
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                editText.setCursorVisible(false);
+                doneButton.setEnabled(true);
+            }
+            return false;
+        });
+        editText.setOnClickListener(v -> {
+            editText.setCursorVisible(true);
+            doneButton.setEnabled(false);
+        });
+
+        ImageButton closeButton = root.findViewById(R.id.close);
+        closeButton.setOnClickListener(v -> {
+            dismiss();
+        });
+        return root;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        if (isExpanded) {
-            //  if you wanna show the bottom sheet as full screen,
-            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-            bottomSheetDialog.setOnShowListener(dialog -> {
-                FrameLayout bottomSheet = ((BottomSheetDialog) dialog)
-                        .findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                if (bottomSheet != null)
-                    BottomSheetBehavior
-                            .from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-            });
-            return bottomSheetDialog;
-        }
         return super.onCreateDialog(savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView tvHello = view.findViewById(R.id.tv_hello);
-        tvHello.setText(message);
+        TextView tvTitle = view.findViewById(R.id.title);
+        tvTitle.setText(title);
     }
 }
