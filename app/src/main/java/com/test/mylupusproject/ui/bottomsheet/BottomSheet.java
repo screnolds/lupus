@@ -2,10 +2,15 @@ package com.test.mylupusproject.ui.bottomsheet;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,10 +40,27 @@ public class BottomSheet extends BottomSheetDialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.bottom_sheet, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.bottom_sheet, container, false);
+        EditText editText = root.findViewById(R.id.userInput);
+        Button doneButton = root.findViewById(R.id.doneButton);
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                editText.setCursorVisible(false);
+                doneButton.setEnabled(true);
+            }
+            return false;
+        });
+        editText.setOnClickListener(v -> {
+            editText.setCursorVisible(true);
+            doneButton.setEnabled(false);
+        });
+
+        ImageButton closeButton = root.findViewById(R.id.close);
+        closeButton.setOnClickListener(v -> {
+            dismiss();
+        });
+        return root;
     }
 
     @NonNull
